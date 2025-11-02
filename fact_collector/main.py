@@ -69,4 +69,26 @@ def save_facts(facts):
 if __name__=="__main__":
     main()
 
-  
+
+    import requests
+
+response = requests.get(API_URL)
+if response.status_code == 200 and response.text.strip():
+    try:
+        data = response.json()
+    except ValueError:
+        print("Received invalid JSON:", response.text)
+        data = None
+else:
+    print("API request failed:", response.status_code)
+    data = None
+
+if data:
+    fact = {
+        "id": data.get("id"),
+        "text": data.get("text"),
+        "source": data.get("source_url")
+    }
+    print(fact)
+else:
+    print("No valid fact retrieved.")
