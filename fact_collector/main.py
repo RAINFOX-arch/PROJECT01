@@ -31,10 +31,14 @@ from config.settings import API_URL
 
 DATA_FILE="data/facts.json"
 def load_facts():
-    if os.path.exists (DATA_FILE):
-        with open (DATA_FILE,"r",encoding="utf-8")as f:
-            return json.load (f)
-        return[]
+    if not os.path.exists(DATA_FILE) or os.path.getsize(DATA_FILE) == 0:
+        return []
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        # 檔案存在但內容不是合法 JSON 時
+        return []
     #讀取資料段
 def save_facts(facts):
     with open(DATA_FILE,"w",encoding="utf-8" )as f:
