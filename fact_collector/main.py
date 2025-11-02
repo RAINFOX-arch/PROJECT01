@@ -18,7 +18,7 @@ def fetch_fact():
 
 
     else:
-        print("API request failed:",response.status.code)
+        print("API request failed:",response.status_code)
     return None
 
 fact=fetch_fact()
@@ -27,6 +27,7 @@ print(fact)
 import requests
 import json
 import os
+os.makedirs("data", exist_ok=True)
 from config.settings import API_URL
 
 DATA_FILE="data/facts.json"
@@ -35,9 +36,12 @@ def load_facts():
         return []
     try:
         with open(DATA_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+           content = f.read().strip()
+        if not content:
+                return []
+                return json.loads(content)
     except json.JSONDecodeError:
-        # 檔案存在但內容不是合法 JSON 時
+        print("⚠️ facts.json 內容損壞或非合法 JSON,重設為空清單")
         return []
     #讀取資料段
 def save_facts(facts):
